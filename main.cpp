@@ -30,5 +30,29 @@ int main(int argc, char** argv) {
     m->GetMatriz();
     m->SetOfertas();
     m->SetDemanda();
+    
+    m->SetPenalidadesOrig();
+    m->SetPenalidadesDest();
+    m->SetMatrizSolucao();
+    
+    m->SetPenalidadesOrig();
+    m->SetPenalidadesDest();
+    m->SetMatrizSolucao();
+    
+    m->SetPenalidadesOrig();
+    m->SetPenalidadesDest();
+    m->SetMatrizSolucao();
+    
+    m->SetPenalidadesOrig();
+    m->SetPenalidadesDest();
+    m->SetMatrizSolucao();
+    
+    m->SetPenalidadesOrig();
+    m->SetPenalidadesDest();
+    m->SetMatrizSolucao();
+    
+    m->SetPenalidadesOrig();
+    m->SetPenalidadesDest();
+    m->SetMatrizSolucao();
     return 0;
 }

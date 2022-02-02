@@ -33,13 +33,16 @@ Matrix::Matrix() {
     this->colunas = colunas;
 
     this->matrix = new int*[linhas];
+    this->matrixPesos = new int*[linhas];
     this->matrixSolucao = new int*[linhas];
 
     for (int i = 0; i < linhas; i++) { // incializa matriz
         this->matrix[i] = new int[i];
+        this->matrixPesos[i] = new int[i];
         this->matrixSolucao[i] = new int[i];
         for (int j = 0; j < colunas; j++) {
             this->matrix[i][j] = 0;
+            this->matrixPesos[i][j] = 0;
             this->matrixSolucao[i][j] = 0;
         }
     }
@@ -73,6 +76,22 @@ void Matrix::GetMatrizSolucao() {
     }
 }
 
+void Matrix::GetSolucao() {
+    int z = 0;
+    cout << "\n\nSolução Básica\n";
+    for (int i = 0; i < this->linhas; i++) {
+        for (int j = 0; j < this->colunas; j++) {
+            if (this->matrixSolucao[i][j] != 0) {
+                cout << "X";
+                cout << i << j << ": " << this->matrixSolucao[i][j] << ";\t";
+                z += this->matrixSolucao[i][j] * this->matrixPesos[i][j];
+            }
+
+        }
+    }
+    cout << "\n" << "Z: " << z;
+}
+
 void Matrix::SetCustosMatriz() {
     int peso;
 
@@ -80,11 +99,13 @@ void Matrix::SetCustosMatriz() {
     for (int i = 0; i < this->linhas; i++) {
 
         this->matrix[i] = new int[i];
+        this->matrixPesos[i] = new int[i];
 
         for (int j = 0; j < this->colunas; j++) {
             cout << "Digite o peso da posição [" << i + 1 << "," << j + 1 << "]: ";
             cin >> peso;
             this->matrix[i][j] = peso;
+            this->matrixPesos[i][j] = peso;
         }
     }
 }
@@ -115,6 +136,25 @@ void Matrix::SetDemanda() {
     }
 }
 
+bool Matrix::IsBalanceado() {
+    int ofertas = 0;
+    int demandas = 0;
+
+    for (int i = 0; i < this->linhas; i++) {
+        ofertas += this->ofertas[i];
+    }
+
+    for (int i = 0; i < this->colunas; i++) {
+        demandas += this->demandas[i];
+    }
+
+    if (ofertas != demandas) {
+        cout << "\nProblema desbalanceado!";
+        return false;
+    }
+    return true;
+}
+
 void Matrix::SetPenalidadesOrig() {
     int menor1, menor2;
     this->penalidadesOrig = new int[this->linhas];
@@ -136,7 +176,9 @@ void Matrix::SetPenalidadesOrig() {
                     menor2 = this->matrix[i][j];
             }
         }
-        this->penalidadesOrig[i] = fabs(menor1 - menor2);
+        if ((menor1 == INFINITO || menor2 == INFINITO) && this->ofertas[i] == NULO)
+            this->penalidadesOrig[i] = 0;
+        else this->penalidadesOrig[i] = fabs(menor1 - menor2);
 
 
     }
@@ -167,7 +209,10 @@ void Matrix::SetPenalidadesDest() {
                     menor2 = this->matrix[j][i];
             }
         }
-        this->penalidadesDest[i] = fabs(menor1 - menor2);
+
+        if ((menor1 == INFINITO || menor2 == INFINITO) && this->demandas[i] == NULO)
+            this->penalidadesDest[i] = 0;
+        else this->penalidadesDest[i] = fabs(menor1 - menor2);
 
     }
     /* cout << "\n \t";
@@ -209,7 +254,7 @@ void Matrix::SetMatrizSolucao() {
         }
     }
 
-    cout << "\nOrigem " << maiorPenalidadeOrig[0] << "\nDestino " << maiorPenalidadeDest[0];
+    // cout << "\nOrigem " << maiorPenalidadeOrig[0] << "\nDestino " << maiorPenalidadeDest[0];
 
 
     // qual é o maior dentre os maiores valores de penalidade
@@ -250,7 +295,7 @@ void Matrix::SetMatrizSolucao() {
         }
     }
 
-    cout << "\nMenor custo: " << menorCusto[0];
+    // cout << "\nMenor custo: " << menorCusto[0];
 
     // adicionar a demanda dessa posição
     if (maiorPenalidadeTipo == "linha") {
@@ -292,9 +337,44 @@ void Matrix::SetMatrizSolucao() {
         // this->penalidadesOrig[maiorPenalidadeOrig[1]] = NULO;
 
     }
-    
-    // this->GetMatrizSolucao();
-   
+
+}
+
+void Matrix::SetSolucao() {
+    bool loop = true;
+    this->SetPenalidadesOrig();
+    this->SetPenalidadesDest();
+
+    while (loop) {
+        bool acabou = true;
+        for (int i = 0; i < this->colunas; i++) {
+            if (this->penalidadesDest[i] != 0) {
+                acabou = false;
+            }
+        }
+        if (acabou) {
+            for (int i = 0; i < this->linhas; i++) {
+                if (this->penalidadesOrig[i] != 0) {
+                    acabou = false;
+                }
+            }
+        }
+        if (acabou) {
+            loop = !acabou;
+            break;
+        }
+
+        this->SetMatrizSolucao();
+
+        this->SetPenalidadesOrig();
+        this->SetPenalidadesDest();
+
+        loop = !acabou;
+    }
+
+    cout << "\n\nMatriz Solução\n";
+    this->GetMatrizSolucao();
+    this->GetSolucao();
 }
 
 

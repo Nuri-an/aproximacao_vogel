@@ -19,6 +19,7 @@ private:
     int linhas;
     int colunas;
     int **matrix;
+    int **matrixPesos;
     int **matrixSolucao;
     int *ofertas;
     int *demandas;
@@ -31,12 +32,15 @@ public:
     virtual ~Matrix();
     void SetCustosMatriz();
     void GetMatriz();
-    void SetMatrizSolucao();
-    void GetMatrizSolucao();
     void SetOfertas();
     void SetDemanda();
+    bool IsBalanceado();
     void SetPenalidadesOrig();
     void SetPenalidadesDest();
+    void SetMatrizSolucao();
+    void GetMatrizSolucao();
+    void SetSolucao();
+    void GetSolucao();
 };
 
 #endif /* MATRIX_H */

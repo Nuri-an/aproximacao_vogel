@@ -27,32 +27,14 @@ int main(int argc, char** argv) {
     Matrix *m = new Matrix();
     
     m->SetCustosMatriz();
-    m->GetMatriz();
+    // m->GetMatriz();
     m->SetOfertas();
     m->SetDemanda();
     
-    m->SetPenalidadesOrig();
-    m->SetPenalidadesDest();
-    m->SetMatrizSolucao();
+    if (m->IsBalanceado()) {
+        m->SetSolucao();
+    }
     
-    m->SetPenalidadesOrig();
-    m->SetPenalidadesDest();
-    m->SetMatrizSolucao();
-    
-    m->SetPenalidadesOrig();
-    m->SetPenalidadesDest();
-    m->SetMatrizSolucao();
-    
-    m->SetPenalidadesOrig();
-    m->SetPenalidadesDest();
-    m->SetMatrizSolucao();
-    
-    m->SetPenalidadesOrig();
-    m->SetPenalidadesDest();
-    m->SetMatrizSolucao();
-    
-    m->SetPenalidadesOrig();
-    m->SetPenalidadesDest();
-    m->SetMatrizSolucao();
+   
     return 0;
 }
